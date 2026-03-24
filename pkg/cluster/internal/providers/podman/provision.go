@@ -220,6 +220,12 @@ func runArgsForNode(node *config.Node, clusterIPFamily config.ClusterIPFamily, n
 	}
 	args = append(args, mappingArgs...)
 
+	// add GPU support if requested
+	// Podman uses CDI device syntax for GPUs
+	if node.GPUs != "" {
+		args = append(args, "--device", fmt.Sprintf("nvidia.com/gpu=%s", node.GPUs))
+	}
+
 	switch node.Role {
 	case config.ControlPlaneRole:
 		args = append(args, "-e", "KUBECONFIG=/etc/kubernetes/admin.conf")

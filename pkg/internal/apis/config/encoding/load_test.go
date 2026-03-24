@@ -73,6 +73,11 @@ func TestLoadCurrent(t *testing.T) {
 			ExpectError: false,
 		},
 		{
+			TestName:    "v1alpha4 config with GPU",
+			Path:        "./testdata/v1alpha4/valid-gpu.yaml",
+			ExpectError: false,
+		},
+		{
 			TestName:    "v1alpha4 non-existent field",
 			Path:        "./testdata/v1alpha4/invalid-bogus-field.yaml",
 			ExpectError: true,
@@ -121,5 +126,29 @@ func TestLoadCurrent(t *testing.T) {
 				t.Fatalf("unexpected lack or error while Loading config")
 			}
 		})
+	}
+}
+
+func TestGPUConversion(t *testing.T) {
+	t.Parallel()
+	// Test that the GPU field is properly converted from v1alpha4 to internal config
+	cfg, err := Load("./testdata/v1alpha4/valid-gpu.yaml")
+	if err != nil {
+		t.Fatalf("failed to load GPU config: %v", err)
+	}
+
+	// Verify we have 2 nodes
+	if len(cfg.Nodes) != 2 {
+		t.Fatalf("expected 2 nodes, got %d", len(cfg.Nodes))
+	}
+
+	// First node (control-plane) should have no GPUs
+	if cfg.Nodes[0].GPUs != "" {
+		t.Errorf("control-plane node should have no GPUs, got %q", cfg.Nodes[0].GPUs)
+	}
+
+	// Second node (worker) should have GPU set to "all"
+	if cfg.Nodes[1].GPUs != "all" {
+		t.Errorf("worker node should have GPUs='all', got %q", cfg.Nodes[1].GPUs)
 	}
 }
