@@ -401,6 +401,33 @@ func TestNodeValidate(t *testing.T) {
 			}(),
 			ExpectErrors: 0,
 		},
+		{
+			TestName: "Valid GPUs field - all",
+			Node: func() Node {
+				cfg := newDefaultedNode(WorkerRole)
+				cfg.GPUs = "all"
+				return cfg
+			}(),
+			ExpectErrors: 0,
+		},
+		{
+			TestName: "Valid GPUs field - empty",
+			Node: func() Node {
+				cfg := newDefaultedNode(WorkerRole)
+				cfg.GPUs = ""
+				return cfg
+			}(),
+			ExpectErrors: 0,
+		},
+		{
+			TestName: "Invalid GPUs field",
+			Node: func() Node {
+				cfg := newDefaultedNode(WorkerRole)
+				cfg.GPUs = "some-invalid-value"
+				return cfg
+			}(),
+			ExpectErrors: 1,
+		},
 	}
 
 	for _, tc := range cases {

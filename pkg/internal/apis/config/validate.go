@@ -134,6 +134,11 @@ func (n *Node) Validate() error {
 		errs = append(errs, errors.Wrapf(err, "invalid portMapping"))
 	}
 
+	// validate GPUs field
+	if n.GPUs != "" && n.GPUs != "all" {
+		errs = append(errs, errors.Errorf("invalid gpus value %q, currently only \"all\" is supported", n.GPUs))
+	}
+
 	if len(errs) > 0 {
 		return errors.NewAggregate(errs)
 	}
