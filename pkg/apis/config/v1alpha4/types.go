@@ -121,6 +121,13 @@ type Node struct {
 	// binded to a host Port
 	ExtraPortMappings []PortMapping `yaml:"extraPortMappings,omitempty" json:"extraPortMappings,omitempty"`
 
+	// GPUs allows enabling GPU support for this node. Currently only "all" is supported
+	// to enable all GPUs. This requires the container runtime to have GPU support
+	// configured (e.g., nvidia-container-toolkit for NVIDIA GPUs).
+	//
+	// Example: gpus: "all"
+	GPUs string `yaml:"gpus,omitempty" json:"gpus,omitempty"`
+
 	// KubeadmConfigPatches are applied to the generated kubeadm config as
 	// merge patches. The `kind` field must match the target object, and
 	// if `apiVersion` is specified it will only be applied to matching objects.
